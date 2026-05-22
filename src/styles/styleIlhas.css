@@ -1,0 +1,472 @@
+/* ============================================================
+   STYLEILHAS.CSS — Páginas de ilha/PD (PC.jsx e similares)
+   Requer: base.css
+   ============================================================ */
+
+/* ---------- LAYOUT PRINCIPAL ---------- */
+main.main-layout {
+  padding-top: calc(var(--header-h) + 20px);
+  padding-bottom: 0;
+  padding-left: 24px;
+  padding-right: 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  min-height: calc(100vh - var(--header-h) - 60px);
+}
+
+/* ---------- ÁREA DE DOCUMENTO ---------- */
+.doc-area {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.section-title { padding: 10px 0 0; }
+.section-title h4 {
+  font-size: 13px;
+  color: var(--blue);
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  border-left: 3px solid var(--yellow);
+  padding-left: 10px;
+}
+
+/* ---------- CARROSSEL DE PDs ---------- */
+.pd-carousel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.boxes-row {
+  display: flex;
+  flex-wrap: nowrap;          /* nunca quebra linha */
+  gap: 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex: 1;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 4px 2px;           /* espaço para sombra dos botões */
+}
+.boxes-row::-webkit-scrollbar { display: none; }
+
+/* Setas do carrossel */
+.pd-arrow {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--yellow-50);
+  background: var(--yellow-25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--blue);
+  font-size: 18px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  padding: 0;
+}
+.pd-arrow:hover {
+  background: var(--yellow);
+  color: var(--black);
+  transform: scale(1.08);
+  box-shadow: 0 4px 14px rgba(238,177,17,0.35);
+}
+
+/* Botões circulares PD */
+.box-pd {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background-color: var(--yellow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--blue);
+  border: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+}
+.box-pd:hover  { transform: scale(1.1); box-shadow: 0 5px 16px rgba(238,177,17,0.40); }
+.box-pd.active { background-color: var(--blue); color: var(--yellow); }
+
+/* Variante menor para o painel de impressão */
+.box-pd-sm {
+  width: 40px;
+  height: 40px;
+  font-size: 10px;
+}
+
+/* Viewer de documento */
+.document-view {
+  position: relative;
+  flex: 1;
+  min-height: 300px;
+  background: var(--glass-bg);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border-radius: var(--r-md);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  overflow: hidden;
+}
+.document-view iframe { width: 100%; height: 100%; border: none; border-radius: var(--r-md); }
+
+.btn-fullscreen {
+  position: absolute;
+  bottom: 10px; right: 10px;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--yellow-50);
+  background: var(--yellow-25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  cursor: pointer;
+  font-size: 15px;
+  color: var(--blue);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.10),
+  inset 0 0 8px rgba(238,177,17,0.15);
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s, color 0.2s;
+  z-index: 5;
+}
+.btn-fullscreen:hover {
+  background: var(--yellow);
+  color: var(--black);
+  transform: scale(1.04);
+  box-shadow: 0 5px 18px rgba(238,177,17,0.35);
+}
+
+/* ---------- ÁREA DE VÍDEO ---------- */
+.video-area { display: flex; flex-direction: column; }
+
+.video-container {
+  position: relative;
+  flex: 1;
+  min-height: 300px;
+  background: var(--glass-bg);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border-radius: var(--r-md);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  overflow: hidden;
+}
+.video-container video { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+.video-controls {
+  position: absolute;
+  bottom: 14px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; gap: 12px;
+  z-index: 5;
+}
+
+:fullscreen video,
+:fullscreen iframe { width: 100vw; height: 100vh; object-fit: contain; }
+
+/* ---------- BOTÃO ASSINAR ---------- */
+.assinatura-area { display: flex; justify-content: center; margin: 18px 0 10px; }
+.btn-assinar {
+  padding: 10px 32px;
+  font-size: 14px; font-weight: 700;
+  cursor: pointer;
+  background: var(--yellow-25);
+  color: var(--blue);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--yellow-50);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 3px 12px rgba(0,0,0,0.10),
+  inset 0 0 8px rgba(238,177,17,0.15);
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s, color 0.2s;
+}
+.btn-assinar:hover:not(:disabled) {
+  background: var(--yellow);
+  color: var(--black);
+  transform: scale(1.04);
+  box-shadow: 0 5px 18px rgba(238,177,17,0.35);
+}
+.btn-assinar:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* ---------- BARRA EXPORTAR + IMPRESSÃO ---------- */
+.export-print-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 24px 12px;
+  flex-wrap: wrap;
+}
+
+/* Botão exportar (agora dentro da barra, não centralizado) */
+.btn-exportar {
+  flex-shrink: 0;
+  padding: 8px 22px;
+  font-size: 13px; font-weight: 600;
+  background: var(--blue);
+  color: var(--white);
+  border: none;
+  border-radius: var(--r-md);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  white-space: nowrap;
+}
+.btn-exportar:hover { background: #0a3457; transform: scale(1.03); }
+
+/* Separador visual */
+.export-print-bar::after {
+  content: '';
+  display: block;
+  width: 1px;
+  height: 36px;
+  background: var(--glass-border);
+  flex-shrink: 0;
+  order: 1;           /* entre btn-exportar e print-panel */
+}
+
+/* Painel de impressão */
+.print-panel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  order: 2;
+}
+
+.print-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--blue);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0.75;
+}
+
+/* Carrossel mini de PDs para impressão */
+.print-pd-carousel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.print-pd-row {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex: 1;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 4px 2px;
+}
+.print-pd-row::-webkit-scrollbar { display: none; }
+
+/* Botão imprimir */
+.btn-imprimir {
+  flex-shrink: 0;
+  padding: 7px 18px;
+  font-size: 13px; font-weight: 600;
+  background: var(--yellow-25);
+  color: var(--blue);
+  border-radius: var(--r-md);
+  border: 1px solid var(--yellow-50);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08),
+  inset 0 0 6px rgba(238,177,17,0.12);
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s, color 0.2s;
+}
+.btn-imprimir:hover:not(:disabled) {
+  background: var(--yellow);
+  color: var(--black);
+  transform: scale(1.03);
+  box-shadow: 0 4px 14px rgba(238,177,17,0.35);
+}
+.btn-imprimir:disabled { opacity: 0.40; cursor: not-allowed; }
+
+/* ---------- OVERLAYS ---------- */
+.overlay, .overlay-form, .overlay-confirm {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.38);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s;
+  z-index: 2000;
+}
+.overlay.active, .overlay-form.active, .overlay-confirm.active {
+  opacity: 1; pointer-events: auto;
+}
+
+/* ---------- CAIXAS DE MODAL ---------- */
+.model-box, .form-box, .confirm-box {
+  background: var(--white);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border-radius: var(--r-md);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  padding: 28px 32px;
+  color: var(--blue);
+  transform: scale(0.88);
+  transition: transform 0.22s;
+  text-align: center;
+  min-width: 240px;
+}
+.overlay.active .model-box,
+.overlay-form.active .form-box,
+.overlay-confirm.active .confirm-box { transform: scale(1); }
+
+.model-box h3, .form-box h3, .confirm-box h3 {
+  font-size: 15px; font-weight: 700;
+  color: var(--blue);
+  margin-bottom: 16px;
+  border-bottom: 2px solid var(--yellow);
+  padding-bottom: 8px;
+}
+
+.model-options { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 14px; }
+.model-options button { padding: 8px 18px; font-size: 13px; }
+
+/* ---------- FORM ASSINATURA ---------- */
+.form-box {
+  width: min(400px, 90vw);
+  display: flex; flex-direction: column;
+  gap: 10px; text-align: left;
+}
+.form-box label { font-size: 12px; font-weight: 600; color: var(--blue); letter-spacing: 0.03em; }
+.form-box input, .form-box select {
+  width: 100%; padding: 9px 12px;
+  font-size: 14px; font-family: var(--font);
+  border-radius: var(--r-sm);
+  border: 1px solid var(--glass-border);
+  background: rgba(255,255,255,0.25);
+  color: var(--blue);
+  box-sizing: border-box;
+  transition: border 0.2s;
+}
+.form-box input:focus, .form-box select:focus { outline: none; border-color: var(--yellow); }
+.form-box button[type="submit"] { margin-top: 6px; width: 100%; text-align: center; }
+
+/* ---------- CONFIRMAR DELETE ---------- */
+.confirm-buttons { display: flex; gap: 12px; justify-content: center; margin-top: 18px; }
+.confirm-buttons button { padding: 8px 20px; font-size: 13px; border-radius: var(--r-lg); }
+
+#btnConfirmDelete {
+  background: rgba(230, 57, 70, 0.18);
+  color: #e63946;
+  border: 1px solid rgba(230, 57, 70, 0.45);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 3px 12px rgba(0,0,0,0.10);
+}
+#btnConfirmDelete:hover {
+  background: #e63946;
+  color: var(--white);
+  transform: scale(1.04);
+  box-shadow: 0 5px 18px rgba(230,57,70,0.35);
+}
+
+#btnCancelDelete {
+  background: var(--yellow-25);
+  color: var(--blue);
+  border: 1px solid var(--yellow-50);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 3px 12px rgba(0,0,0,0.10),
+  inset 0 0 8px rgba(238,177,17,0.15);
+}
+#btnCancelDelete:hover {
+  background: var(--yellow);
+  color: var(--black);
+  transform: scale(1.04);
+  box-shadow: 0 5px 18px rgba(238,177,17,0.35);
+}
+
+.btn-lixeira { background: none; border: none; font-size: 16px; cursor: pointer; transition: transform 0.2s; padding: 2px; }
+.btn-lixeira:hover { transform: scale(1.3); }
+
+/* ---------- TABELA PD ---------- */
+.tabelas-pd { padding: 0 24px 32px; }
+
+.tabelaPD {
+  display: none;
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+  background: rgba(13,67,107,0.12);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+.tabelaPD.visible { display: table; }
+.tabelaPD th {
+  background: rgba(13,67,107,0.65);
+  color: var(--white);
+  padding: 11px 12px;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 0.03em; text-align: center;
+}
+.tabelaPD td {
+  padding: 9px 12px; text-align: center;
+  color: var(--blue); font-size: 13px;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+.tabelaPD tr:hover td { background: rgba(255,255,255,0.20); }
+
+/* ---------- IMPRESSÃO ---------- */
+@media print {
+  /* Oculta tudo exceto a tabela selecionada para impressão */
+  header, footer, main.main-layout,
+  .assinatura-area, .export-print-bar,
+  .tabelaPD:not(.print-target) { display: none !important; }
+
+  .tabelaPD.print-target {
+    display: table !important;
+    width: 100%;
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+}
+
+/* ---------- RESPONSIVO ---------- */
+@media (max-width: 900px) {
+  main.main-layout { grid-template-columns: 1fr; padding-left: 14px; padding-right: 14px; }
+  .document-view, .video-container { min-height: 240px; }
+  .export-print-bar { flex-direction: column; align-items: flex-start; }
+  .export-print-bar::after { display: none; }
+  .print-panel { width: 100%; }
+}
+
+@media (max-width: 480px) {
+  .box-pd      { width: 44px; height: 44px; font-size: 10px; }
+  .box-pd-sm   { width: 36px; height: 36px; font-size: 9px; }
+  .tabelas-pd  { padding: 0 12px 24px; }
+  .export-print-bar { padding: 0 12px 12px; }
+}

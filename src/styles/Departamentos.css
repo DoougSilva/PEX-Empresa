@@ -1,0 +1,263 @@
+/* ============================================================
+   DEPARTAMENTOS.CSS   |   Requer: base.css
+   Espelha o layout de StyleLinhas.css:
+   - Carrossel à ESQUERDA, sticky/centralizado na viewport
+   - Cards à DIREITA com rolagem interna e scroll-reveal
+   ============================================================ */
+
+/* ── LAYOUT PRINCIPAL ──────────────────────────────────────── */
+.dept-layout {
+  --linha-footer-reserve: var(--footer-h, 74px);
+  --linha-gap: 24px;
+  --linha-inner-bottom: 24px;
+
+  min-height: calc(100vh - var(--linha-footer-reserve));
+  height: calc(100vh - var(--linha-footer-reserve));
+  width: 100%;
+
+  display: grid;
+  /* Carrossel esq | Cards dir — mesmas proporções do StyleLinhas */
+  grid-template-columns: minmax(420px, 50fr) minmax(390px, 50fr);
+  gap: var(--linha-gap);
+  align-items: stretch;
+
+  padding-top: calc(var(--header-h) + 24px);
+  padding-bottom: var(--linha-inner-bottom);
+  overflow: hidden;
+}
+
+/* ── COLUNA DO CARROSSEL (esquerda) ────────────────────────── */
+.dept-video-panel {
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.dept-video-panel .video-box-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  border-radius: var(--r-md);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  overflow: hidden;
+  background: var(--glass-bg);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+}
+
+.dept-video-panel .video-track {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+  transition: transform 0.5s var(--ease);
+}
+
+.dept-video-panel .video-item {
+  min-width: 100%;
+  height: 100%;
+  flex-shrink: 0;
+}
+
+.dept-video-panel .video-item video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Botão de som */
+.dept-video-panel .btn-floating-sound {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  width: auto;
+  height: auto;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--yellow-50);
+  background: var(--yellow-25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--blue);
+  font-size: 13px;
+  padding: 6px 12px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.10),
+  inset 0 0 8px rgba(238,177,17,0.15);
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s, color 0.2s;
+}
+.dept-video-panel .btn-floating-sound:hover {
+  background: var(--yellow);
+  color: var(--black);
+  transform: scale(1.04);
+  box-shadow: 0 5px 18px rgba(238,177,17,0.35);
+}
+
+/* ── COLUNA DE CARDS (direita) — rola internamente ─────────── */
+.dept-cards-section {
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.section-header {
+  flex: 0 0 auto;
+  margin-bottom: 14px;
+}
+
+.section-header h4 {
+  font-size: 13px;
+  color: var(--blue);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-left: 3px solid var(--yellow);
+  padding-left: 10px;
+}
+
+/* Grid com scroll interno */
+.dept-cards-grid {
+  flex: 1 1 auto;
+  min-height: 0;
+
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: start;
+  gap: 14px;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 8px;
+  padding-bottom: 8px;
+  scroll-behavior: smooth;
+  scrollbar-gutter: stable;
+}
+
+/* Scrollbar discreta */
+.dept-cards-grid::-webkit-scrollbar       { width: 8px; }
+.dept-cards-grid::-webkit-scrollbar-thumb { background: rgba(13,67,107,0.22); border-radius: 999px; }
+.dept-cards-grid::-webkit-scrollbar-track { background: rgba(255,255,255,0.14); border-radius: 999px; }
+
+/* Cards compactos */
+.dept-cards-grid .box {
+  min-width: 0;
+  padding: 12px;
+  gap: 8px;
+
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+          opacity   0.30s var(--ease),
+          transform 0.30s var(--ease),
+          box-shadow 0.22s ease,
+          border-color 0.22s ease;
+}
+
+.dept-cards-grid .box.reveal-from-top {
+  transform: translateY(-22px);
+  opacity: 0;
+}
+
+.dept-cards-grid .box.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.dept-cards-grid .box img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  border-radius: var(--r-sm);
+  display: block;
+}
+
+.dept-cards-grid .box .box-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dept-cards-grid .box .box-content p {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--blue);
+  opacity: 0.84;
+  margin: 0;
+}
+
+.dept-cards-grid .box .box-content button {
+  align-self: stretch;
+  font-size: 12px;
+  padding: 7px 10px;
+  margin-top: auto;
+}
+
+/* ── RESPONSIVO ────────────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .dept-layout {
+    grid-template-columns: minmax(360px, 50fr) minmax(340px, 50fr);
+    gap: 18px;
+  }
+  .dept-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .dept-layout {
+    height: auto;
+    min-height: calc(100vh - var(--linha-footer-reserve));
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  /* Carrossel no topo em mobile */
+  .dept-video-panel {
+    order: -1;
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  .dept-video-panel .video-box-container {
+    width: 100%;
+    height: auto;
+    max-height: none;
+    aspect-ratio: 16 / 9;
+  }
+
+  .dept-cards-section {
+    height: auto;
+    overflow: visible;
+  }
+
+  .dept-cards-grid {
+    flex: none;
+    overflow: visible;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 520px) {
+  .dept-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}

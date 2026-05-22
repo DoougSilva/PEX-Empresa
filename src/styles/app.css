@@ -1,0 +1,137 @@
+/* ============================================================
+   APP.CSS — complementos React para o projeto Whirlpool
+   Carregado após base.css no main.jsx
+   ============================================================ */
+
+/* ── NAV link ativo (react-router) ── */
+nav ul li a.active-nav {
+  color: var(--yellow);
+  background: rgba(238,177,17,.10);
+  border-left: 3px solid var(--yellow);
+  padding-left: 25px;
+  z-index: 1099;
+}
+
+/* ── Menu toggle: zera estilo de <button> global do base.css ── */
+.menu-toggle {
+  appearance: none !important;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  padding: 0 !important;
+  min-height: unset !important;
+  font-size: 24px;
+  color: var(--white);
+  cursor: pointer;
+  user-select: none;
+  line-height: 1;
+  transition: color 0.2s !important;
+  transform: none !important;
+  z-index: 1100;
+}
+.menu-toggle:hover { color: var(--yellow) !important; background: none !important; }
+.menu-toggle:active { transform: none !important; }
+
+/* ── Toasts ── */
+#toast-container {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  z-index: 9999;
+  display: flex; flex-direction: column; gap: 10px;
+  pointer-events: none;
+}
+.toast {
+  background: var(--blue);
+  color: var(--white);
+  padding: 12px 18px;
+  border-radius: var(--r-md);
+  font-size: 13px; font-weight: 600;
+  font-family: var(--font);
+  box-shadow: 0 8px 24px rgba(0,0,0,.22);
+  border-left: 4px solid var(--yellow);
+  animation: toastIn .32s var(--ease) both;
+  pointer-events: auto;
+  max-width: 320px;
+}
+.toast.toast-ok  { border-left-color: #2ecc71; }
+.toast.toast-err { border-left-color: #e63946; }
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(40px) scale(.9); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ── Scrollbar global ── */
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--yellow-50); border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: var(--yellow); }
+* { scrollbar-width: thin; scrollbar-color: var(--yellow-50) transparent; }
+
+/* ── Focus visível ── */
+:focus-visible { outline: 2px solid var(--yellow); outline-offset: 3px; border-radius: var(--r-sm); }
+
+/* ── btn-lixeira: zera o reset do botão global ── */
+.btn-lixeira {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  padding: 2px;
+  color: var(--blue);
+  min-height: unset !important;
+  display: inline-flex;
+}
+.btn-lixeira:hover { transform: scale(1.3) !important; color: #e63946 !important; background: none !important; }
+
+/* ── btn-cruz-close: zera o reset do botão global ── */
+.btn-cruz-close {
+  background: rgba(255,255,255,0.15) !important;
+  border: 1px solid rgba(255,255,255,0.30) !important;
+  color: var(--white) !important;
+  box-shadow: none !important;
+  min-height: unset !important;
+}
+.btn-cruz-close:hover { background: rgba(255,255,255,0.30) !important; transform: scale(1.1) !important; color: var(--white) !important; }
+
+/* ── Overlay z-index stack ── */
+.overlay        { z-index: 2000 !important; }
+.overlay-form   { z-index: 2010 !important; }
+.overlay-confirm{ z-index: 2020 !important; }
+.overlay-cruz   { z-index: 3000 !important; }
+
+/* ── btn-fullscreen inside viewer headers ── */
+.dds-viewer-header .btn-fullscreen,
+.ps-viewer-header  .btn-fullscreen {
+  position: static !important;
+  width: 32px !important; height: 32px !important; font-size: 14px !important;
+}
+
+/* ── video-controls .btn-floating-sound: remove position:absolute herdado ── */
+.video-controls .btn-floating-sound { position: static !important; }
+
+/* ── Carrossel lateral (StyleLinhas.css) em React ── */
+/* O video-box-container no Linha1 usa position:sticky via CSS —
+   o React não interfere pois usamos as mesmas classes do HTML original */
+
+/* ── .box animação: garante que delay CSS funcione ── */
+.box {
+  transition-delay: var(--box-delay, 0ms);
+}
+
+/* ── tabelaPD: base.css seta display:none — sobrescrevemos com [data-visible] ── */
+.tabelaPD { display: none !important; }
+.tabelaPD.visible { display: table !important; }
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
