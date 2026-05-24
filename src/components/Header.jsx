@@ -1,12 +1,6 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-
-const NAV_LINKS = [
-  { to: '/',                        label: ' Home' },
-  { to: '/departamentos',           label: ' Treinar Colaborador' },
-  { to: '/procedimentos-seguranca', label: ' Procedimentos de Segurança' },
-  { to: '/dds',                     label: ' Diálogo Diário de Segurança' },
-]
+import { NAV_LINKS } from '../data/navigation'
 
 export default function Header({ title }) {
   const [open, setOpen] = useState(false)

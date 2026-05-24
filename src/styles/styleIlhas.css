@@ -22,17 +22,6 @@ main.main-layout {
   gap: 14px;
 }
 
-.section-title { padding: 10px 0 0; }
-.section-title h4 {
-  font-size: 13px;
-  color: var(--blue);
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  border-left: 3px solid var(--yellow);
-  padding-left: 10px;
-}
-
 /* ---------- CARROSSEL DE PDs ---------- */
 .pd-carousel {
   display: flex;
@@ -47,6 +36,7 @@ main.main-layout {
   overflow-x: auto;
   overflow-y: hidden;
   flex: 1;
+  min-width: 0;              /* impede estouro em grid/flex */
   scroll-behavior: smooth;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -180,27 +170,6 @@ main.main-layout {
 
 /* ---------- BOTÃO ASSINAR ---------- */
 .assinatura-area { display: flex; justify-content: center; margin: 18px 0 10px; }
-.btn-assinar {
-  padding: 10px 32px;
-  font-size: 14px; font-weight: 700;
-  cursor: pointer;
-  background: var(--yellow-25);
-  color: var(--blue);
-  border-radius: var(--r-lg);
-  border: 1px solid var(--yellow-50);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 3px 12px rgba(0,0,0,0.10),
-  inset 0 0 8px rgba(238,177,17,0.15);
-  transition: background 0.2s, transform 0.2s, box-shadow 0.2s, color 0.2s;
-}
-.btn-assinar:hover:not(:disabled) {
-  background: var(--yellow);
-  color: var(--black);
-  transform: scale(1.04);
-  box-shadow: 0 5px 18px rgba(238,177,17,0.35);
-}
-.btn-assinar:disabled { opacity: 0.45; cursor: not-allowed; }
 
 /* ---------- BARRA EXPORTAR + IMPRESSÃO ---------- */
 .export-print-bar {
@@ -211,20 +180,13 @@ main.main-layout {
   flex-wrap: wrap;
 }
 
-/* Botão exportar (agora dentro da barra, não centralizado) */
-.btn-exportar {
-  flex-shrink: 0;
+/* Botão exportar dentro da barra é mais compacto */
+.export-print-bar .btn-exportar {
   padding: 8px 22px;
-  font-size: 13px; font-weight: 600;
-  background: var(--blue);
-  color: var(--white);
-  border: none;
+  font-size: 13px;
+  font-weight: 600;
   border-radius: var(--r-md);
-  cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
-  white-space: nowrap;
 }
-.btn-exportar:hover { background: #0a3457; transform: scale(1.03); }
 
 /* Separador visual */
 .export-print-bar::after {
@@ -304,110 +266,6 @@ main.main-layout {
   box-shadow: 0 4px 14px rgba(238,177,17,0.35);
 }
 .btn-imprimir:disabled { opacity: 0.40; cursor: not-allowed; }
-
-/* ---------- OVERLAYS ---------- */
-.overlay, .overlay-form, .overlay-confirm {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.38);
-  backdrop-filter: blur(6px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.22s;
-  z-index: 2000;
-}
-.overlay.active, .overlay-form.active, .overlay-confirm.active {
-  opacity: 1; pointer-events: auto;
-}
-
-/* ---------- CAIXAS DE MODAL ---------- */
-.model-box, .form-box, .confirm-box {
-  background: var(--white);
-  backdrop-filter: var(--blur);
-  -webkit-backdrop-filter: var(--blur);
-  border-radius: var(--r-md);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
-  padding: 28px 32px;
-  color: var(--blue);
-  transform: scale(0.88);
-  transition: transform 0.22s;
-  text-align: center;
-  min-width: 240px;
-}
-.overlay.active .model-box,
-.overlay-form.active .form-box,
-.overlay-confirm.active .confirm-box { transform: scale(1); }
-
-.model-box h3, .form-box h3, .confirm-box h3 {
-  font-size: 15px; font-weight: 700;
-  color: var(--blue);
-  margin-bottom: 16px;
-  border-bottom: 2px solid var(--yellow);
-  padding-bottom: 8px;
-}
-
-.model-options { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 14px; }
-.model-options button { padding: 8px 18px; font-size: 13px; }
-
-/* ---------- FORM ASSINATURA ---------- */
-.form-box {
-  width: min(400px, 90vw);
-  display: flex; flex-direction: column;
-  gap: 10px; text-align: left;
-}
-.form-box label { font-size: 12px; font-weight: 600; color: var(--blue); letter-spacing: 0.03em; }
-.form-box input, .form-box select {
-  width: 100%; padding: 9px 12px;
-  font-size: 14px; font-family: var(--font);
-  border-radius: var(--r-sm);
-  border: 1px solid var(--glass-border);
-  background: rgba(255,255,255,0.25);
-  color: var(--blue);
-  box-sizing: border-box;
-  transition: border 0.2s;
-}
-.form-box input:focus, .form-box select:focus { outline: none; border-color: var(--yellow); }
-.form-box button[type="submit"] { margin-top: 6px; width: 100%; text-align: center; }
-
-/* ---------- CONFIRMAR DELETE ---------- */
-.confirm-buttons { display: flex; gap: 12px; justify-content: center; margin-top: 18px; }
-.confirm-buttons button { padding: 8px 20px; font-size: 13px; border-radius: var(--r-lg); }
-
-#btnConfirmDelete {
-  background: rgba(230, 57, 70, 0.18);
-  color: #e63946;
-  border: 1px solid rgba(230, 57, 70, 0.45);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 3px 12px rgba(0,0,0,0.10);
-}
-#btnConfirmDelete:hover {
-  background: #e63946;
-  color: var(--white);
-  transform: scale(1.04);
-  box-shadow: 0 5px 18px rgba(230,57,70,0.35);
-}
-
-#btnCancelDelete {
-  background: var(--yellow-25);
-  color: var(--blue);
-  border: 1px solid var(--yellow-50);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 3px 12px rgba(0,0,0,0.10),
-  inset 0 0 8px rgba(238,177,17,0.15);
-}
-#btnCancelDelete:hover {
-  background: var(--yellow);
-  color: var(--black);
-  transform: scale(1.04);
-  box-shadow: 0 5px 18px rgba(238,177,17,0.35);
-}
-
-.btn-lixeira { background: none; border: none; font-size: 16px; cursor: pointer; transition: transform 0.2s; padding: 2px; }
-.btn-lixeira:hover { transform: scale(1.3); }
 
 /* ---------- TABELA PD ---------- */
 .tabelas-pd { padding: 0 24px 32px; }

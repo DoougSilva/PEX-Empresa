@@ -1,51 +1,32 @@
 import { useState } from 'react'
+import { useEscapeKey } from '../hooks/useEscapeKey'
 
-/**
- * AssinaturaModal — replica exata dos overlays do HTML original
- *
- * Props:
- *  - open      : boolean
- *  - onClose   : () => void
- *  - onConfirm : (dados) => void
- *  - docLabel  : string   — campo readonly exibido no form
- *  - variant   : 'pc' | 'ps'   (default: 'pc')
- *      'pc' → Nome, RE, Turno, Tipo de Treinamento, Documento (readonly)
- *      'ps' → Nome, Matrícula, Área/Turno, Documento (readonly), Data
- */
 export default function AssinaturaModal({ open, onClose, onConfirm, docLabel, variant = 'pc' }) {
-  const [nome,   setNome]   = useState('')
-  const [re,     setRe]     = useState('')
-  const [turno,  setTurno]  = useState('')
-  const [tipo,   setTipo]   = useState('')
-  const [area,   setArea]   = useState('')
-  const [data,   setData]   = useState(() => new Date().toISOString().split('T')[0])
+  const [nome, setNome] = useState('')
+  const [re, setRe] = useState('')
+  const [turno, setTurno] = useState('')
+  const [tipo, setTipo] = useState('')
+  const [area, setArea] = useState('')
+  const [data, setData] = useState(() => new Date().toISOString().split('T')[0])
+  const [abriuAnterior, setAbriuAnterior] = useState(false)
 
-  if (!open) return null
-
-  function reset() {
-    setNome(''); setRe(''); setTurno(''); setTipo(''); setArea('')
+  if (open && !abriuAnterior) {
+    setAbriuAnterior(true)
+    setNome('')
+    setRe('')
+    setTurno('')
+    setTipo('')
+    setArea('')
     setData(new Date().toISOString().split('T')[0])
   }
-
-  function handleCancel() { reset(); onClose() }
-
-  function handleConfirm() {
-    if (variant === 'pc') {
-      if (!nome.trim() || !re.trim() || !turno.trim() || !tipo) return
-      onConfirm({
-        nome: nome.trim(), re: re.trim(), turno: turno.trim(), tipo,
-        doc: docLabel, data: new Date().toLocaleDateString('pt-BR')
-      })
-    } else {
-      // ps variant
-      if (!nome.trim() || !re.trim() || !area.trim()) return
-      onConfirm({
-        nome: nome.trim(), re: re.trim(), turno: area.trim(),
-        doc: docLabel, data: formatarData(data)
-      })
-    }
-    reset(); onClose()
+  if (!open && abriuAnterior) {
+    setAbriuAnterior(false)
   }
+
+  // ESC para fechar
+  useEscapeKey(open, onClose)
+
+  if (!open) return null
 
   function formatarData(d) {
     if (!d) return new Date().toLocaleDateString('pt-BR')
@@ -53,10 +34,30 @@ export default function AssinaturaModal({ open, onClose, onConfirm, docLabel, va
     return `${dd}/${m}/${y}`
   }
 
+  function validarEConfirmar() {
+    if (variant === 'pc') {
+      if (!nome.trim() || !re.trim() || !turno.trim() || !tipo) return
+      onConfirm({
+        nome: nome.trim(), re: re.trim(), turno: turno.trim(), tipo,
+        doc: docLabel, data: new Date().toLocaleDateString('pt-BR')
+      })
+    } else {
+      if (!nome.trim() || !re.trim() || !area.trim()) return
+      onConfirm({
+        nome: nome.trim(), re: re.trim(), turno: area.trim(),
+        doc: docLabel, data: formatarData(data)
+      })
+    }
+    onClose()
+  }
+
   return (
     <div
       className="overlay-form active"
-      onClick={e => { if (e.target === e.currentTarget) handleCancel() }}
+      role="dialog"
+      aria-modal="true"
+      aria-label={variant === 'pc' ? 'Assinar Documento' : 'Registrar Assinatura'}
+      onClick={e => { if (e.target === e.currentTarget) onClose() }}
     >
       <div className="form-box">
         {variant === 'pc'
@@ -128,11 +129,11 @@ export default function AssinaturaModal({ open, onClose, onConfirm, docLabel, va
         )}
 
         <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
-          <button type="button" onClick={handleConfirm} style={{ flex: 1, textAlign: 'center' }}>
+          <button type="button" onClick={validarEConfirmar} style={{ flex: 1, textAlign: 'center' }}>
             Confirmar
           </button>
           <button
-            type="button" onClick={handleCancel}
+            type="button" onClick={onClose}
             style={{ flex: 1, textAlign: 'center', background: 'rgba(230,57,70,0.15)', color: '#e63946', borderColor: 'rgba(230,57,70,0.4)' }}
           >
             Cancelar

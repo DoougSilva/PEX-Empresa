@@ -23,21 +23,10 @@
   flex-direction: column;
 }
 
-/* ── TÍTULO DE SEÇÃO ───────────────────────────────────────── */
-.section-header {
+/* Ajuste específico do section-header para SP2 */
+.sp2-page-main .section-header {
   flex-shrink: 0;
   padding-top: 24px;
-  margin-bottom: 14px;
-}
-.section-header h4 {
-  font-size: 13px;
-  color: var(--blue);
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  border-left: 3px solid var(--yellow);
-  padding-left: 10px;
-  margin: 0;
 }
 
 /* ── GRID DE CARDS — 4 colunas, rola internamente ─────────── */

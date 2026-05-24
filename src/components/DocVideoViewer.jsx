@@ -1,4 +1,6 @@
-import { useRef, useState } from 'react'
+import { useRef, useId } from 'react'
+import { useFullscreen } from '../hooks/useFullscreen'
+import { useVideoSound } from '../hooks/useVideoSound'
 
 /**
  * DocVideoViewer
@@ -8,7 +10,7 @@ import { useRef, useState } from 'react'
  *  - docLabel?: string
  *  - videoLabel?: string
  *  - showPlaceholder?: boolean
- *  - className?: string  — extra CSS class on the row wrapper
+ *  - rowClass?: string  — extra CSS class on the row wrapper
  */
 export default function DocVideoViewer({
   docSrc,
@@ -19,20 +21,10 @@ export default function DocVideoViewer({
   rowClass = '',
 }) {
   const videoRef = useRef(null)
-  const [muted, setMuted] = useState(true)
-
-  const toggleSound = () => {
-    if (!videoRef.current) return
-    videoRef.current.muted = !videoRef.current.muted
-    setMuted(videoRef.current.muted)
-  }
-
-  const fullscreen = (id) => {
-    const el = document.getElementById(id)
-    if (!el) return
-    if (!document.fullscreenElement) el.requestFullscreen().catch(() => {})
-    else document.exitFullscreen()
-  }
+  const iframeRef = useRef(null)
+  const uid = useId()
+  const solicitarTelaCheia = useFullscreen()
+  const { muted, alternarSom } = useVideoSound(videoRef)
 
   return (
     <div className={`dds-viewer-row ${rowClass}`}>
@@ -43,14 +35,14 @@ export default function DocVideoViewer({
           <span className="dds-viewer-label">{docLabel}</span>
           <button
             className="btn-fullscreen"
-            onClick={() => fullscreen('dvw-iframe')}
+            onClick={() => solicitarTelaCheia(iframeRef)}
             title="Tela cheia"
             style={{ position: 'static', width: 32, height: 32, fontSize: 14 }}
           >⛶</button>
         </div>
         <div className="dds-frame-wrap">
           {docSrc
-            ? <iframe id="dvw-iframe" src={docSrc} title={docLabel} />
+            ? <iframe ref={iframeRef} id={`${uid}-iframe`} src={docSrc} title={docLabel} />
             : showPlaceholder && (
               <div className="dds-placeholder">
                 <span>📄</span><p>Selecione um item no painel lateral</p>
@@ -67,7 +59,7 @@ export default function DocVideoViewer({
           <div className="dds-video-btns">
             <button
               className="btn-floating-sound"
-              onClick={toggleSound}
+              onClick={alternarSom}
               title="Som"
               style={{ position: 'static' }}
               aria-label={muted ? 'Ativar som' : 'Desativar som'}
@@ -76,7 +68,7 @@ export default function DocVideoViewer({
             </button>
             <button
               className="btn-fullscreen"
-              onClick={() => fullscreen('dvw-video')}
+              onClick={() => solicitarTelaCheia(videoRef)}
               title="Tela cheia"
               style={{ position: 'static', width: 32, height: 32, fontSize: 14 }}
             >⛶</button>
@@ -85,7 +77,7 @@ export default function DocVideoViewer({
         <div className="dds-frame-wrap">
           {videoSrc
             ? <video
-                id="dvw-video"
+                id={`${uid}-video`}
                 ref={videoRef}
                 src={videoSrc}
                 autoPlay

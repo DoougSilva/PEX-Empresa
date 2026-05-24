@@ -13,7 +13,7 @@ export function useLocalStorage(key, initial) {
   const set = (val) => {
     const next = typeof val === 'function' ? val(value) : val
     setValue(next)
-    try { localStorage.setItem(key, JSON.stringify(next)) } catch {}
+    try { localStorage.setItem(key, JSON.stringify(next)) } catch { /* localStorage indisponivel */ }
   }
 
   return [value, set]

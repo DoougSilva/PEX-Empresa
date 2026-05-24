@@ -1,93 +1,72 @@
-import { useState, useRef } from 'react'
-import * as XLSX from 'xlsx'
+import { useState, useRef, useCallback } from 'react'
 import Header        from '../components/Header'
 import Footer        from '../components/Footer'
 import AssinaturaModal from '../components/AssinaturaModal'
 import ConfirmModal    from '../components/ConfirmModal'
 import { useLocalStorage } from '../hooks/useLocalStorage'
+import { DOCS }          from '../data/docsSeguranca'
+import { useFullscreen }  from '../hooks/useFullscreen'
+import { useVideoSound }  from '../hooks/useVideoSound'
+import { exportarExcel }  from '../utils/exportarExcel'
 import '../styles/Styleps.css'
-
-const DOCS = [
-  { icon: '🛡️', label: 'NR-12 — Segurança em Máquinas',         title: 'NR-12 — Segurança em Máquinas e Equipamentos',    doc: 'docs/seguranca/NR12.pdf',              video: 'video/seguranca/NR12.mp4'              },
-  { icon: '⚠️', label: 'NR-35 — Trabalho em Altura',             title: 'NR-35 — Trabalho em Altura',                      doc: 'docs/seguranca/NR35.pdf',              video: 'video/seguranca/NR35.mp4'              },
-  { icon: '🔥', label: 'Plano de Emergência e Evacuação',         title: 'Plano de Emergência e Evacuação',                  doc: 'docs/seguranca/Emergencia.pdf',        video: 'video/seguranca/Emergencia.mp4'        },
-  { icon: '⚡', label: 'NR-10 — Segurança em Eletricidade',      title: 'NR-10 — Segurança em Eletricidade',               doc: 'docs/seguranca/NR10.pdf',              video: 'video/seguranca/NR10.mp4'              },
-  { icon: '🧤', label: 'EPI — Equipamentos de Proteção',         title: 'EPI — Equipamentos de Proteção Individual',       doc: 'docs/seguranca/EPI.pdf',               video: 'video/seguranca/EPI.mp4'               },
-  { icon: '🚑', label: 'Procedimento de Primeiros Socorros',     title: 'Procedimento de Primeiros Socorros',               doc: 'docs/seguranca/PrimeirosSocorros.pdf', video: 'video/seguranca/PrimeirosSocorros.mp4' },
-  { icon: '☣️', label: 'Manuseio de Produtos Químicos',          title: 'Manuseio de Produtos Químicos',                   doc: 'docs/seguranca/Quimicos.pdf',          video: 'video/seguranca/Quimicos.mp4'          },
-  { icon: '📋', label: 'Permissão de Trabalho — PT',             title: 'Permissão de Trabalho — PT',                      doc: 'docs/seguranca/PT.pdf',                video: 'video/seguranca/PT.mp4'                },
-]
 
 export default function ProcedimentosSeguranca() {
   const [assinaturas, setAssinaturas] = useLocalStorage('assinaturas_PS', [])
-  const [activeIdx,  setActiveIdx]    = useState(0)
-  const [muted,      setMuted]        = useState(true)
-  const [showForm,   setShowForm]     = useState(false)
-  const [deleteIdx,  setDeleteIdx]    = useState(null)
+  const [activeIdx, setActiveIdx] = useState(0)
+  const [showForm, setShowForm] = useState(false)
+  const [deleteIdx, setDeleteIdx] = useState(null)
   const videoRef = useRef(null)
+  const iframeRef = useRef(null)
+  const { muted, alternarSom } = useVideoSound(videoRef)
 
   const active = DOCS[activeIdx]
 
   /* ── troca documento ── */
-  function loadDoc(idx) {
+  const carregarDocumento = useCallback((idx) => {
     setActiveIdx(idx)
-    // sincroniza src do vídeo diretamente (mesmo comportamento do HTML original)
     if (videoRef.current) {
       videoRef.current.src = DOCS[idx].video
       videoRef.current.load()
       videoRef.current.play().catch(() => {})
     }
-  }
-
-  /* ── som ── */
-  function toggleSound() {
-    if (!videoRef.current) return
-    videoRef.current.muted = !videoRef.current.muted
-    setMuted(videoRef.current.muted)
-  }
+  }, [])
 
   /* ── fullscreen ── */
-  function toggleFullscreen(id) {
-    const el = document.getElementById(id)
-    if (!el) return
-    if (!document.fullscreenElement) el.requestFullscreen().catch(() => {})
-    else document.exitFullscreen()
-  }
+  const solicitarTelaCheia = useFullscreen()
 
   /* ── salvar assinatura ── */
-  function salvarAssinatura(dados) {
+  const salvarAssinatura = useCallback((dados) => {
     setAssinaturas(prev => [...prev, dados])
-  }
+  }, [setAssinaturas])
 
   /* ── deletar ── */
-  function confirmarDelete() {
+  const confirmarDelete = useCallback(() => {
     setAssinaturas(prev => prev.filter((_, i) => i !== deleteIdx))
     setDeleteIdx(null)
-  }
+  }, [deleteIdx, setAssinaturas])
 
   /* ── exportar Excel ── */
-  function exportarExcel() {
+  const handleExportarExcel = useCallback(() => {
     if (!assinaturas.length) return
-    const wb   = XLSX.utils.book_new()
-    const rows = [
-      ['Procedimentos de Segurança — Whirlpool'],
-      [`Data de Exportação: ${new Date().toLocaleDateString('pt-BR')}`],
-      [],
-      ['#', 'Nome', 'Matrícula', 'Área / Turno', 'Documento', 'Data'],
-      ...assinaturas.map((a, i) => [i + 1, a.nome, a.re, a.turno, a.doc, a.data]),
-    ]
-    const ws = XLSX.utils.aoa_to_sheet(rows)
-    ws['!cols'] = [{ wch: 4 }, { wch: 28 }, { wch: 14 }, { wch: 22 }, { wch: 44 }, { wch: 12 }]
-    ws['!merges'] = [{ s: { r:0,c:0 }, e: { r:0,c:5 } }, { s: { r:1,c:0 }, e: { r:1,c:5 } }]
-    XLSX.utils.book_append_sheet(wb, ws, 'Assinaturas')
-    XLSX.writeFile(wb, 'Assinaturas_ProcedimentosSeguranca.xlsx')
-  }
+    exportarExcel({
+      cabecalho: [
+        ['Procedimentos de Segurança — Whirlpool'],
+        [`Data de Exportação: ${new Date().toLocaleDateString('pt-BR')}`],
+        [],
+      ],
+      colunas: ['#', 'Nome', 'Matrícula', 'Área / Turno', 'Documento', 'Data'],
+      dados: assinaturas.map((a, i) => [i + 1, a.nome, a.re, a.turno, a.doc, a.data]),
+      nomeArquivo: 'Assinaturas_ProcedimentosSeguranca.xlsx',
+      nomeAba: 'Assinaturas',
+      larguraColunas: [{ wch: 4 }, { wch: 28 }, { wch: 14 }, { wch: 22 }, { wch: 44 }, { wch: 12 }],
+      merges: [{ s: { r:0,c:0 }, e: { r:0,c:5 } }, { s: { r:1,c:0 }, e: { r:1,c:5 } }],
+    })
+  }, [assinaturas])
 
   return (
     <>
       <Header title="Procedimentos de Segurança" />
 
-      {/* ── OVERLAY FORMULÁRIO (componente global) ── */}
       <AssinaturaModal variant="ps"
         open={showForm}
         onClose={() => setShowForm(false)}
@@ -95,7 +74,6 @@ export default function ProcedimentosSeguranca() {
         docLabel={active.title}
       />
 
-      {/* ── OVERLAY CONFIRMAR DELETE (componente global) ── */}
       <ConfirmModal
         open={deleteIdx !== null}
         message="Esta ação não pode ser desfeita."
@@ -103,20 +81,19 @@ export default function ProcedimentosSeguranca() {
         onCancel={() => setDeleteIdx(null)}
       />
 
-      {/* ── MAIN (estrutura idêntica ao HTML original) ── */}
       <main className="ps-main">
 
-        {/* ASIDE: botões oblongos dos documentos */}
+        {/* ASIDE: botoes oblongos dos documentos */}
         <aside className="ps-aside">
           <div className="section-title">
             <h4>Documentos</h4>
           </div>
-          <div className="ps-doc-list" id="docList">
+          <div className="ps-doc-list">
             {DOCS.map((d, i) => (
               <button
-                key={i}
+                key={d.label}
                 className={`ps-doc-btn${activeIdx === i ? ' active' : ''}`}
-                onClick={() => loadDoc(i)}
+                onClick={() => carregarDocumento(i)}
               >
                 <span className="ps-doc-icon">{d.icon}</span>
                 <span className="ps-doc-label">{d.label}</span>
@@ -125,56 +102,53 @@ export default function ProcedimentosSeguranca() {
           </div>
         </aside>
 
-        {/* CONTEÚDO: doc + vídeo lado a lado */}
+        {/* CONTEUDO: doc + video lado a lado */}
         <section className="ps-content">
 
-          {/* título do documento ativo */}
           <div className="section-title ps-content-title">
-            <h4 id="docActiveTitle">{active.title}</h4>
+            <h4>{active.title}</h4>
           </div>
 
           <div className="ps-viewer-row">
 
             {/* Viewer de documento */}
-            <div className="ps-doc-viewer box show" id="docViewer">
+            <div className="ps-doc-viewer box show">
               <div className="ps-viewer-header">
                 <span className="ps-viewer-label">📄 Documento</span>
                 <button
                   className="btn-fullscreen"
-                  id="btnFullDoc"
                   title="Tela cheia"
-                  onClick={() => toggleFullscreen('docFrame')}
+                  onClick={() => solicitarTelaCheia(iframeRef)}
                   style={{ position: 'static', width: 32, height: 32, fontSize: 14 }}
                 >⛶</button>
               </div>
               <div className="ps-frame-wrap">
-                <iframe id="docFrame" src={active.doc} title="Documento de Segurança" />
+                <iframe ref={iframeRef} src={active.doc} title="Documento de Segurança" />
               </div>
             </div>
 
-            {/* Viewer de vídeo */}
-            <div className="ps-video-viewer box show" id="videoViewer">
+            {/* Viewer de video */}
+            <div className="ps-video-viewer box show">
               <div className="ps-viewer-header">
                 <span className="ps-viewer-label">🎬 Vídeo Instrucional</span>
                 <div className="ps-video-btns">
                   <button
                     className="btn-floating-sound"
-                    id="btnSound"
                     title="Som"
                     style={{ position: 'static' }}
-                    onClick={toggleSound}
+                    onClick={alternarSom}
+                    aria-label={muted ? 'Ativar som' : 'Desativar som'}
                   >{muted ? '🔇' : '🔊'}</button>
                   <button
                     className="btn-fullscreen"
                     title="Tela cheia"
-                    onClick={() => toggleFullscreen('docVideo')}
+                    onClick={() => solicitarTelaCheia(videoRef)}
                     style={{ position: 'static', width: 32, height: 32, fontSize: 14 }}
                   >⛶</button>
                 </div>
               </div>
               <div className="ps-frame-wrap">
                 <video
-                  id="docVideo"
                   ref={videoRef}
                   src={active.video}
                   autoPlay
@@ -185,14 +159,14 @@ export default function ProcedimentosSeguranca() {
               </div>
             </div>
 
-          </div>{/* /.ps-viewer-row */}
+          </div>
 
-          {/* Ações */}
+          {/* Acoes */}
           <div className="ps-actions">
-            <button className="btn-assinar" id="btnAssinar" onClick={() => setShowForm(true)}>
+            <button className="btn-assinar" onClick={() => setShowForm(true)}>
               ✍️ Assinar Documento
             </button>
-            <button className="btn-exportar" onClick={exportarExcel}>
+            <button className="btn-exportar" onClick={handleExportarExcel}>
               ⬇️ Exportar para Excel
             </button>
           </div>
@@ -201,12 +175,12 @@ export default function ProcedimentosSeguranca() {
       </main>
 
       {/* ── TABELA DE ASSINATURAS ── */}
-      <section className="tabelas-ps" id="tabelaSection">
+      <section className="tabelas-ps">
         <div className="section-title" style={{ padding: '0 24px 10px' }}>
           <h4>📝 Folha de Assinaturas</h4>
         </div>
         <div className="ps-table-wrap">
-          <table className="tabelaPS" id="tabelaAssinaturas">
+          <table className="tabelaPS">
             <thead>
               <tr>
                 <th>#</th>
@@ -218,11 +192,11 @@ export default function ProcedimentosSeguranca() {
                 <th></th>
               </tr>
             </thead>
-            <tbody id="tbodyAssinaturas">
+            <tbody>
               {assinaturas.length === 0
                 ? <tr className="empty-row"><td colSpan={7}>Nenhuma assinatura registrada.</td></tr>
                 : assinaturas.map((a, i) => (
-                  <tr key={i}>
+                  <tr key={`${a.re}-${a.data}-${i}`}>
                     <td>{i + 1}</td>
                     <td>{a.nome}</td>
                     <td>{a.re}</td>

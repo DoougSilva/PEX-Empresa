@@ -112,9 +112,6 @@ nav ul li a.active-nav {
   width: 32px !important; height: 32px !important; font-size: 14px !important;
 }
 
-/* ── video-controls .btn-floating-sound: remove position:absolute herdado ── */
-.video-controls .btn-floating-sound { position: static !important; }
-
 /* ── Carrossel lateral (StyleLinhas.css) em React ── */
 /* O video-box-container no Linha1 usa position:sticky via CSS —
    o React não interfere pois usamos as mesmas classes do HTML original */
@@ -127,6 +124,147 @@ nav ul li a.active-nav {
 /* ── tabelaPD: base.css seta display:none — sobrescrevemos com [data-visible] ── */
 .tabelaPD { display: none !important; }
 .tabelaPD.visible { display: table !important; }
+
+/* ── section-header (compartilhado Departamentos, StyleLinhas, StyleSP2) ── */
+.section-header {
+  flex: 0 0 auto;
+  margin-bottom: 14px;
+}
+.section-header h4 {
+  font-size: 13px;
+  color: var(--blue);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-left: 3px solid var(--yellow);
+  padding-left: 10px;
+  margin: 0;
+}
+
+/* ── Overlays compartilhados ── */
+.overlay, .overlay-form, .overlay-confirm {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.38);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s;
+  z-index: 2000;
+}
+.overlay.active, .overlay-form.active, .overlay-confirm.active {
+  opacity: 1; pointer-events: auto;
+}
+
+/* ── Caixas de modal compartilhadas ── */
+.model-box, .form-box, .confirm-box {
+  background: var(--white);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border-radius: var(--r-md);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  padding: 28px 32px;
+  color: var(--blue);
+  transform: scale(0.88);
+  transition: transform 0.22s;
+  text-align: center;
+  min-width: 240px;
+}
+.overlay.active .model-box,
+.overlay-form.active .form-box,
+.overlay-confirm.active .confirm-box { transform: scale(1); }
+
+.model-box h3, .form-box h3, .confirm-box h3 {
+  font-size: 15px; font-weight: 700;
+  color: var(--blue);
+  margin-bottom: 16px;
+  border-bottom: 2px solid var(--yellow);
+  padding-bottom: 8px;
+}
+
+.model-options { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 14px; }
+.model-options button { padding: 8px 18px; font-size: 13px; }
+
+/* ── Formulário de assinatura ── */
+.form-box {
+  width: min(420px, 92vw);
+  display: flex; flex-direction: column;
+  gap: 10px; text-align: left;
+}
+.form-box label { font-size: 12px; font-weight: 600; color: var(--blue); letter-spacing: 0.03em; }
+.form-box input, .form-box select {
+  width: 100%; padding: 9px 12px;
+  font-size: 14px; font-family: var(--font);
+  border-radius: var(--r-sm);
+  border: 1px solid var(--glass-border);
+  background: rgba(255,255,255,0.28);
+  color: var(--blue);
+  box-sizing: border-box;
+  transition: border 0.2s;
+}
+.form-box input:focus, .form-box select:focus { outline: none; border-color: var(--yellow); }
+.form-box input[readonly] { background: rgba(13,67,107,0.06); opacity: 0.75; cursor: default; }
+
+/* ── Botões confirmar/cancelar em modais ── */
+.confirm-buttons { display: flex; gap: 12px; justify-content: center; margin-top: 18px; }
+.confirm-buttons button { padding: 8px 22px; font-size: 13px; border-radius: var(--r-lg); font-family: var(--font); }
+
+/* ── btn-assinar (compartilhado PC + PS) ── */
+.btn-assinar {
+  padding: 10px 28px;
+  font-size: 14px; font-weight: 700;
+  cursor: pointer;
+  background: var(--yellow-25);
+  color: var(--blue);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--yellow-50);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 3px 12px rgba(0,0,0,0.10),
+  inset 0 0 8px rgba(238,177,17,0.15);
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s, color 0.2s;
+  font-family: var(--font);
+}
+.btn-assinar:hover:not(:disabled) {
+  background: var(--yellow);
+  color: var(--black);
+  transform: scale(1.04);
+  box-shadow: 0 5px 18px rgba(238,177,17,0.35);
+}
+.btn-assinar:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* ── btn-exportar (compartilhado PC + PS) ── */
+.btn-exportar {
+  padding: 10px 28px;
+  font-size: 14px; font-weight: 700;
+  background: var(--blue);
+  color: var(--white);
+  border: none;
+  border-radius: var(--r-lg);
+  cursor: pointer;
+  font-family: var(--font);
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 3px 12px rgba(13,67,107,0.25);
+  white-space: nowrap;
+}
+.btn-exportar:hover { background: #0a3457; transform: scale(1.04); box-shadow: 0 5px 18px rgba(13,67,107,0.35); }
+
+/* ── section-title (unificado: usado em styleIlhas, Styleps, Styledds) ── */
+.section-title { padding: 10px 0 0; }
+.section-title h4 {
+  font-size: 13px;
+  color: var(--blue);
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  border-left: 3px solid var(--yellow);
+  padding-left: 10px;
+}
 
 /* ── Reduced motion ── */
 @media (prefers-reduced-motion: reduce) {

@@ -57,17 +57,6 @@ export default function VideoCarousel({
 
   return (
     <div className="video-box-container" style={containerStyle}>
-      {/* Sound button — absolute top-right */}
-      <button
-        className="btn-floating-sound"
-        onClick={() => setMuted(m => !m)}
-        title="Som"
-        aria-label={muted ? 'Ativar som' : 'Desativar som'}
-        style={showControls ? {} : { position: 'absolute' }}
-      >
-        {muted ? '🔇' : '🔊'}
-      </button>
-
       {/* Track */}
       <div
         className="video-track"
@@ -88,7 +77,7 @@ export default function VideoCarousel({
               playsInline
               loop={!autoAdvance}
               onEnded={autoAdvance ? next : undefined}
-              style={sticky ? { width: '100%', height: '100%', objectFit: 'cover' } : {}}
+              style={sticky ? { width: '100%', height: '100%', objectFit: 'contain' } : {}}
             />
           </div>
         ))}

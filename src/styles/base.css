@@ -206,10 +206,11 @@ button:hover {
 /* ---------- VÍDEO CARROSSEL ---------- */
 .video-box-container {
   position: relative;
+  overflow: hidden;
 }
 .video-track { display: flex; transition: transform 0.5s var(--ease); }
-.video-item  {min-width: 80%;}
-.video-item video { width: 80%; border-radius: var(--r-sm); }
+.video-item  { min-width: 100%; flex-shrink: 0; aspect-ratio: 16 / 9; background: #000; }
+.video-item video { width: 100%; height: 100%; display: block; border-radius: var(--r-sm); object-fit: contain; }
 .video-controls {
   display: flex;
   justify-content: center;
@@ -239,12 +240,6 @@ button:hover {
   transform: scale(1.04);
   box-shadow: 0 5px 18px rgba(238,177,17,0.35);
 }
-.btn-floating-sound {
-  position: absolute;
-  top: 12px; right: 12px;
-  z-index: 10;
-}
-
 /* ---------- FOOTER ---------- */
 footer {
   width: 100%;

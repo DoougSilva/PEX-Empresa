@@ -1,14 +1,5 @@
-/**
- * ConfirmModal — replica exata dos overlays overlay-confirm do HTML original
- * Props:
- *  - open      : boolean
- *  - message   : string  (default: 'Esta ação não pode ser desfeita.')
- *  - onConfirm : () => void
- *  - onCancel  : () => void
- *  - confirmLabel : string (default: 'Remover')
- *  - cancelLabel  : string (default: 'Cancelar')
- *  - title        : string (default: 'Remover Assinatura?')
- */
+import { useEscapeKey } from '../hooks/useEscapeKey'
+
 export default function ConfirmModal({
   open,
   title       = 'Remover Assinatura?',
@@ -18,21 +9,26 @@ export default function ConfirmModal({
   confirmLabel = 'Remover',
   cancelLabel  = 'Cancelar',
 }) {
+  useEscapeKey(open, onCancel)
+
   if (!open) return null
 
   return (
     <div
       className="overlay-confirm active"
+      role="dialog"
+      aria-modal="true"
+      aria-label={title}
       onClick={e => { if (e.target === e.currentTarget) onCancel() }}
     >
       <div className="confirm-box">
         <h3>{title}</h3>
         <p style={{ fontSize: 13, opacity: .8 }}>{message}</p>
         <div className="confirm-buttons">
-          <button id="btnConfirmDelete" type="button" onClick={onConfirm}>
+          <button type="button" onClick={onConfirm}>
             {confirmLabel}
           </button>
-          <button id="btnCancelDelete" type="button" onClick={onCancel}>
+          <button type="button" onClick={onCancel}>
             {cancelLabel}
           </button>
         </div>
